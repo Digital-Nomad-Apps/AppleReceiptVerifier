@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using AppleReceiptVerifier.Interfaces;
 
@@ -51,6 +48,30 @@ namespace AppleReceiptVerifier
             }
 
             return response;
+        }
+
+        public async Task<string> GetResponseAsync(Uri url, string postData)
+        {
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create(url);
+            webRequest.ContentType = "text/plain";
+            webRequest.Method = "POST";
+
+            Stream requestStream = await webRequest.GetRequestStreamAsync();
+            using (var streamWriter = new StreamWriter(requestStream))
+            {
+                await streamWriter.WriteAsync(postData);
+                streamWriter.Flush();
+                // streamWriter.Close(); // Not required when using "using" block - automatically closed on Dispose
+            }
+
+            HttpWebResponse webResponse = (HttpWebResponse)await webRequest.GetResponseAsync();
+            Stream responseStream = webResponse.GetResponseStream();
+
+            using (var streamReader = new StreamReader(responseStream))
+            {
+                return await streamReader.ReadToEndAsync();
+                // streamReader.Close(); // Not required when using "using" block - automatically closed on Dispose
+            }
         }
     }
 }
