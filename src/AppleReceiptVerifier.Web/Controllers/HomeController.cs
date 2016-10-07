@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using AppleReceiptVerifier.Web.Models;
-using Newtonsoft.Json;
 
 namespace AppleReceiptVerifier.Web.Controllers
 {
@@ -30,7 +26,7 @@ namespace AppleReceiptVerifier.Web.Controllers
         /// <param name="model">The model.</param>
         /// <returns>returns ActionResult</returns>
         [HttpPost]
-        public ActionResult Index(ReceiptTestViewModel model)
+        public async Task<ActionResult> Index(ReceiptTestViewModel model)
         {
             ReceiptManager receiptManager = new ReceiptManager();
             var env = AppleReceiptVerifier.Environments.Production;
@@ -39,8 +35,14 @@ namespace AppleReceiptVerifier.Web.Controllers
                 env = AppleReceiptVerifier.Environments.Sandbox;
             }
 
-            var response = receiptManager.ValidateReceipt(env, model.ReceiptData, model.Password);
-            model.ReceiptResponse = response;
+            if (model.UseAsync)
+            {
+                model.ReceiptResponse = await receiptManager.ValidateReceiptAsync(env, model.ReceiptData, model.Password);
+            }
+            else
+            {
+                model.ReceiptResponse = receiptManager.ValidateReceipt(env, model.ReceiptData, model.Password);
+            }
 
             return this.View(model);
         }

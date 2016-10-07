@@ -59,6 +59,9 @@ namespace AppleReceiptVerifier.Web.Models
         [DisplayName("Password")]
         public string Password { get; set; }
 
+        [DisplayName("Use Async")]
+        public bool UseAsync { get; set; }
+
         /// <summary>
         /// Gets or sets the receipt response.
         /// </summary>

@@ -13,6 +13,9 @@
             @Html.LabelFor(x => x.Environment) <br />
             @Html.DropDownListFor(x => x.Environment, Model.Environments) <br />
             <br />
+            @Html.LabelFor(x => x.UseAsync) <br />
+            @Html.CheckBoxFor(x => x.UseAsync) <br />
+            <br />
             @Html.LabelFor(x => x.ReceiptData)<br />
             @Html.TextAreaFor(x => x.ReceiptData, 10, 60, null)<br />
             <br/>
